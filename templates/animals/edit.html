@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Registro de Cita - Mascota #{{ animal.id or animal_id }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h2 class="fw-bold mb-1 text-dark">
+                    <i class="bi bi-pencil-square text-primary me-2"></i>Editar Registro de Mascota
+                </h2>
+                <p class="text-muted mb-0">Modifica los datos del animal o reprograma la cita médica (ID: #{{ animal.id or animal_id }}).</p>
+            </div>
+            <a href="{{ url_for('animals.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Volver al listado
+            </a>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <form action="{{ url_for('animals.edit', id=animal.id or animal_id) }}" method="POST" novalidate>
+                    
+                    <!-- Sección 1: Datos de la Mascota -->
+                    <h5 class="fw-bold text-primary mb-3 pb-2 border-bottom">
+                        <i class="bi bi-heart-pulse me-2"></i>1. Datos de la Mascota
+                    </h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="nombre_mascota" class="form-label fw-semibold">Nombre de la Mascota <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="nombre_mascota" name="nombre_mascota" 
+                                   value="{{ animal.nombre_mascota }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="especie" class="form-label fw-semibold">Especie <span class="text-danger">*</span></label>
+                            <select class="form-select" id="especie" name="especie" required>
+                                <option value="" disabled>Selecciona una especie...</option>
+                                <option value="Canino" {% if animal.especie == 'Canino' %}selected{% endif %}>Canino (Perro)</option>
+                                <option value="Felino" {% if animal.especie == 'Felino' %}selected{% endif %}>Felino (Gato)</option>
+                                <option value="Ave" {% if animal.especie == 'Ave' %}selected{% endif %}>Ave</option>
+                                <option value="Roedor" {% if animal.especie == 'Roedor' %}selected{% endif %}>Roedor (Conejo, Hamster, Cobaya)</option>
+                                <option value="Reptil" {% if animal.especie == 'Reptil' %}selected{% endif %}>Reptil</option>
+                                <option value="Otro" {% if animal.especie == 'Otro' %}selected{% endif %}>Otro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="raza" class="form-label fw-semibold">Raza <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="raza" name="raza" 
+                                   value="{{ animal.raza }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="edad" class="form-label fw-semibold">Edad Estimada <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="edad" name="edad" 
+                                   value="{{ animal.edad }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="sexo" class="form-label fw-semibold">Sexo <span class="text-danger">*</span></label>
+                            <select class="form-select" id="sexo" name="sexo" required>
+                                <option value="" disabled>Selecciona...</option>
+                                <option value="Macho" {% if animal.sexo == 'Macho' %}selected{% endif %}>Macho</option>
+                                <option value="Hembra" {% if animal.sexo == 'Hembra' %}selected{% endif %}>Hembra</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Sección 2: Datos del Propietario -->
+                    <h5 class="fw-bold text-primary mb-3 pb-2 border-bottom">
+                        <i class="bi bi-person-badge me-2"></i>2. Datos del Propietario / Responsable
+                    </h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-7">
+                            <label for="nombre_propietario" class="form-label fw-semibold">Nombre Completo <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="nombre_propietario" name="nombre_propietario" 
+                                   value="{{ animal.nombre_propietario }}" required>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="telefono_propietario" class="form-label fw-semibold">Teléfono de Contacto <span class="text-danger">*</span></label>
+                            <input type="tel" class="form-control" id="telefono_propietario" name="telefono_propietario" 
+                                   value="{{ animal.telefono_propietario }}" required>
+                        </div>
+                    </div>
+
+                    <!-- Sección 3: Datos de la Cita Médica -->
+                    <h5 class="fw-bold text-primary mb-3 pb-2 border-bottom">
+                        <i class="bi bi-calendar2-week me-2"></i>3. Programación de la Cita
+                    </h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="fecha_cita" class="form-label fw-semibold">Fecha de la Cita <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="fecha_cita" name="fecha_cita" 
+                                   value="{{ animal.fecha_cita }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="hora_cita" class="form-label fw-semibold">Hora de la Cita <span class="text-danger">*</span></label>
+                            <input type="time" class="form-control" id="hora_cita" name="hora_cita" 
+                                   value="{{ animal.hora_cita }}" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="motivo_cita" class="form-label fw-semibold">Motivo de la Cita / Consulta <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="motivo_cita" name="motivo_cita" rows="3" required>{{ animal.motivo_cita }}</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                        <a href="{{ url_for('animals.index') }}" class="btn btn-secondary px-4">Cancelar</a>
+                        <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                            <i class="bi bi-save me-1"></i> Guardar Cambios
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

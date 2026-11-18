@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}Listado de Animales para Citas - Veterinaria{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-7">
+        <h2 class="fw-bold mb-1 text-dark">
+            <i class="bi bi-calendar2-check text-primary me-2"></i>Citas Programadas de Animales
+        </h2>
+        <p class="text-muted mb-0">Control y registro de pacientes animales para consulta veterinaria.</p>
+    </div>
+    <div class="col-md-5 text-md-end mt-3 mt-md-0">
+        <a href="{{ url_for('animals.create') }}" class="btn btn-primary btn-lg shadow-sm">
+            <i class="bi bi-plus-lg me-1"></i> Nueva Cita / Mascota
+        </a>
+    </div>
+</div>
+
+{% if db_error %}
+<div class="card border-danger shadow-sm mb-4">
+    <div class="card-body text-danger">
+        <h5 class="card-title fw-bold"><i class="bi bi-database-x me-2"></i>No se pudo conectar a MySQL 8.4.11</h5>
+        <p class="card-text">Verifica que tu servidor MySQL esté activo y hayas ejecutado el script <code>database/schema.sql</code>.</p>
+        <p class="mb-0">Revisa también que los datos de conexión en el archivo <code>.env</code> (host, puerto, usuario y contraseña) coincidan con tu configuración.</p>
+    </div>
+</div>
+{% endif %}
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-semibold text-secondary">
+            <i class="bi bi-table me-2"></i>Registros Actuales
+        </h5>
+        <span class="badge bg-secondary rounded-pill px-3 py-2">{{ animales|length }} Registrados</span>
+    </div>
+    <div class="card-body p-0">
+        {% if animales %}
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col" class="ps-4">ID</th>
+                        <th scope="col">Mascota</th>
+                        <th scope="col">Detalles</th>
+                        <th scope="col">Propietario / Contacto</th>
+                        <th scope="col">Fecha & Hora</th>
+                        <th scope="col">Motivo de Cita</th>
+                        <th scope="col" class="text-center pe-4">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in animales %}
+                    <tr>
+                        <td class="ps-4 fw-bold text-muted">#{{ a.id }}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-pet me-3 text-center">
+                                    {% if a.especie|lower == 'canino' or 'perro' in a.especie|lower %}
+                                        <i class="bi bi-emoji-smile text-primary fs-3"></i>
+                                    {% elif a.especie|lower == 'felino' or 'gato' in a.especie|lower %}
+                                        <i class="bi bi-suit-heart text-danger fs-3"></i>
+                                    {% else %}
+                                        <i class="bi bi-heart-pulse text-success fs-3"></i>
+                                    {% endif %}
+                                </div>
+                                <div>
+                                    <span class="fw-bold fs-6 text-dark d-block">{{ a.nombre_mascota }}</span>
+                                    <small class="text-muted">{{ a.especie }} - {{ a.raza }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border me-1">{{ a.edad }}</span>
+                            {% if a.sexo == 'Macho' %}
+                                <span class="badge bg-info-subtle text-info-emphasis border border-info-subtle">
+                                    <i class="bi bi-gender-male"></i> Macho
+                                </span>
+                            {% else %}
+                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle">
+                                    <i class="bi bi-gender-female"></i> Hembra
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="fw-semibold">{{ a.nombre_propietario }}</div>
+                            <small class="text-muted"><i class="bi bi-telephone me-1"></i>{{ a.telefono_propietario }}</small>
+                        </td>
+                        <td>
+                            <div class="fw-semibold text-primary">
+                                <i class="bi bi-calendar-event me-1"></i>{{ a.fecha_cita }}
+                            </div>
+                            <small class="text-muted">
+                                <i class="bi bi-clock me-1"></i>{{ a.hora_cita }}
+                            </small>
+                        </td>
+                        <td>
+                            <span class="text-truncate d-inline-block" style="max-width: 220px;" title="{{ a.motivo_cita }}">
+                                {{ a.motivo_cita }}
+                            </span>
+                        </td>
+                        <td class="text-center pe-4">
+                            <div class="btn-group" role="group">
+                                <a href="{{ url_for('animals.edit', id=a.id) }}" class="btn btn-outline-primary btn-sm" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ a.id }}" title="Eliminar">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </div>
+
+                            <!-- Modal de Confirmación de Eliminación -->
+                            <div class="modal fade" id="deleteModal{{ a.id }}" tabindex="-1" aria-labelledby="modalLabel{{ a.id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header border-0 pb-0">
+                                            <h5 class="modal-title fw-bold text-danger" id="modalLabel{{ a.id }}">
+                                                <i class="bi bi-exclamation-triangle-fill me-2"></i>Confirmar Eliminación
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-start py-3">
+                                            <p class="mb-1">¿Estás seguro de que deseas eliminar el registro de la mascota <strong>{{ a.nombre_mascota }}</strong>?</p>
+                                            <small class="text-muted d-block">Propietario: {{ a.nombre_propietario }} | Cita: {{ a.fecha_cita }}</small>
+                                            <small class="text-danger mt-2 d-block">Esta acción no se puede deshacer.</small>
+                                        </div>
+                                        <div class="modal-footer border-0 pt-0">
+                                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                            <form action="{{ url_for('animals.delete', id=a.id) }}" method="POST" class="d-inline">
+                                                <button type="submit" class="btn btn-danger btn-sm">Sí, Eliminar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-calendar-x text-muted display-4 d-block mb-3"></i>
+            <h5 class="fw-semibold text-secondary">No hay animales registrados para citas</h5>
+            <p class="text-muted">Empieza registrando una nueva mascota para su atención médica veterinaria.</p>
+            <a href="{{ url_for('animals.create') }}" class="btn btn-primary mt-2">
+                <i class="bi bi-plus-circle me-1"></i> Registrar la primera cita
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

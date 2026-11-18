@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrar Animal para Cita - Veterinaria{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+                <h2 class="fw-bold mb-1 text-dark">
+                    <i class="bi bi-calendar-plus text-primary me-2"></i>Registrar Cita de Animal
+                </h2>
+                <p class="text-muted mb-0">Ingresa los datos del animal y los detalles de la consulta veterinaria.</p>
+            </div>
+            <a href="{{ url_for('animals.index') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i> Volver al listado
+            </a>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <form action="{{ url_for('animals.create') }}" method="POST" novalidate>
+                    
+                    <!-- Sección 1: Datos de la Mascota -->
+                    <h5 class="fw-bold text-primary mb-3 pb-2 border-bottom">
+                        <i class="bi bi-heart-pulse me-2"></i>1. Datos de la Mascota
+                    </h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="nombre_mascota" class="form-label fw-semibold">Nombre de la Mascota <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="nombre_mascota" name="nombre_mascota" 
+                                   placeholder="Ej. Max, Luna, Toby" value="{{ form_data.get('nombre_mascota', '') }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="especie" class="form-label fw-semibold">Especie <span class="text-danger">*</span></label>
+                            <select class="form-select" id="especie" name="especie" required>
+                                <option value="" disabled {% if not form_data.get('especie') %}selected{% endif %}>Selecciona una especie...</option>
+                                <option value="Canino" {% if form_data.get('especie') == 'Canino' %}selected{% endif %}>Canino (Perro)</option>
+                                <option value="Felino" {% if form_data.get('especie') == 'Felino' %}selected{% endif %}>Felino (Gato)</option>
+                                <option value="Ave" {% if form_data.get('especie') == 'Ave' %}selected{% endif %}>Ave</option>
+                                <option value="Roedor" {% if form_data.get('especie') == 'Roedor' %}selected{% endif %}>Roedor (Conejo, Hamster, Cobaya)</option>
+                                <option value="Reptil" {% if form_data.get('especie') == 'Reptil' %}selected{% endif %}>Reptil</option>
+                                <option value="Otro" {% if form_data.get('especie') == 'Otro' %}selected{% endif %}>Otro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="raza" class="form-label fw-semibold">Raza <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="raza" name="raza" 
+                                   placeholder="Ej. Labrador, Mestizo, Siamés" value="{{ form_data.get('raza', '') }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="edad" class="form-label fw-semibold">Edad Estimada <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="edad" name="edad" 
+                                   placeholder="Ej. 2 años, 8 meses" value="{{ form_data.get('edad', '') }}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="sexo" class="form-label fw-semibold">Sexo <span class="text-danger">*</span></label>
+                            <select class="form-select" id="sexo" name="sexo" required>
+                                <option value="" disabled {% if not form_data.get('sexo') %}selected{% endif %}>Selecciona...</option>
+                                <option value="Macho" {% if form_data.get('sexo') == 'Macho' %}selected{% endif %}>Macho</option>
+                                <option value="Hembra" {% if form_data.get('sexo') == 'Hembra' %}selected{% endif %}>Hembra</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Sección 2: Datos del Propietario -->
+                    <h5 class="fw-bold text-primary mb-3 pb-2 border-bottom">
+                        <i class="bi bi-person-badge me-2"></i>2. Datos del Propietario / Responsable
+                    </h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-7">
+                            <label for="nombre_propietario" class="form-label fw-semibold">Nombre Completo <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="nombre_propietario" name="nombre_propietario" 
+                                   placeholder="Nombre y apellidos del dueño" value="{{ form_data.get('nombre_propietario', '') }}" required>
+                        </div>
+                        <div class="col-md-5">
+                            <label for="telefono_propietario" class="form-label fw-semibold">Teléfono de Contacto <span class="text-danger">*</span></label>
+                            <input type="tel" class="form-control" id="telefono_propietario" name="telefono_propietario" 
+                                   placeholder="Ej. 555-123-4567" value="{{ form_data.get('telefono_propietario', '') }}" required>
+                        </div>
+                    </div>
+
+                    <!-- Sección 3: Datos de la Cita Médica -->
+                    <h5 class="fw-bold text-primary mb-3 pb-2 border-bottom">
+                        <i class="bi bi-calendar2-week me-2"></i>3. Programación de la Cita
+                    </h5>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label for="fecha_cita" class="form-label fw-semibold">Fecha de la Cita <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="fecha_cita" name="fecha_cita" 
+                                   value="{{ form_data.get('fecha_cita', '') }}" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="hora_cita" class="form-label fw-semibold">Hora de la Cita <span class="text-danger">*</span></label>
+                            <input type="time" class="form-control" id="hora_cita" name="hora_cita" 
+                                   value="{{ form_data.get('hora_cita', '') }}" required>
+                        </div>
+                        <div class="col-12">
+                            <label for="motivo_cita" class="form-label fw-semibold">Motivo de la Cita / Consulta <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="motivo_cita" name="motivo_cita" rows="3" 
+                                      placeholder="Describe el motivo (ej. Vacunación, revisión general, cirugía menor, desparasitación, etc.)" required>{{ form_data.get('motivo_cita', '') }}</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                        <a href="{{ url_for('animals.index') }}" class="btn btn-secondary px-4">Cancelar</a>
+                        <button type="submit" class="btn btn-primary px-4 fw-semibold">
+                            <i class="bi bi-check2-circle me-1"></i> Registrar Cita
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

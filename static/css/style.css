@@ -1,0 +1,48 @@
+/* Estilos personalizados para el CRUD Veterinario */
+
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #333333;
+}
+
+.avatar-pet {
+    width: 44px;
+    height: 44px;
+    background-color: #f0f4f8;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.table th {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+    font-weight: 600;
+}
+
+.table td {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.btn-group .btn {
+    border-radius: 6px !important;
+    margin: 0 2px;
+}
+
+.card {
+    border-radius: 10px;
+}
+
+.card-header {
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+}
